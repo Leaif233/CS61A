@@ -6,8 +6,7 @@ def both_odd(a, b):
     >>> both_odd(2, 1)
     False
     """
-    return a and b % 2 == 1 # You can replace this line!
-
+    return a % 2 == 1 and b % 2 == 1 
 
 def factorial(n):
     """Return the factorial of a positive integer n.
@@ -17,7 +16,9 @@ def factorial(n):
     >>> factorial(5)
     120
     """
-    pass  # YOUR CODE HERE
+    if n == 1: # YOUR CODE HERE
+        return 1
+    return n * factorial(n-1)
 
 
 def is_triangle(a, b, c):
@@ -31,8 +32,9 @@ def is_triangle(a, b, c):
     >>> is_triangle(2, 2, 2)
     True
     """
-    pass  # YOUR CODE HERE
-
+    if a <= 0 or b <= 0 or c <= 0 :# YOUR CODE HERE
+        return False
+    return a + b > c and a + c > b and b + c > a
 
 def number_of_six(n):
     """Return the number of 6 in each digit of a positive integer n.
@@ -42,8 +44,12 @@ def number_of_six(n):
     >>> number_of_six(123456)
     1
     """
-    pass  # YOUR CODE HERE
-
+    count = 0
+    while n > 0 :# YOUR CODE HERE
+        if n % 10 == 6:
+            count += 1
+        n //= 10
+    return count
 
 def max_digit(x):
     """Return the max digit of x.
@@ -59,4 +65,8 @@ def max_digit(x):
     >>> a
     3
     """
-    pass  # YOUR CODE HERE
+    array = []  # YOUR CODE HERE
+    while x > 0:
+        array.append(x % 10)
+        x //= 10
+    return max(array)
