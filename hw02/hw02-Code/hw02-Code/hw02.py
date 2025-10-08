@@ -27,6 +27,7 @@ def compose(h, g):
     6
     """
     "*** YOUR CODE HERE ***"
+    return lambda x : h(g(x))
 
 def product(n, f):
     """Return the product of the first n terms in a sequence.
@@ -47,6 +48,10 @@ def product(n, f):
     162
     """
     "*** YOUR CODE HERE ***"
+    result = 1
+    for i in range(1,n+1):
+        result *= f(i)
+    return result
 
 def accumulate(combiner, base, n, f):
     """Return the result of combining the first n terms in a sequence and base.
@@ -69,6 +74,9 @@ def accumulate(combiner, base, n, f):
     16
     """
     "*** YOUR CODE HERE ***"
+    for i in range(1,n+1):
+        base = combiner(base,f(i))
+    return base
 
 def summation_using_accumulate(n, f):
     """Returns the sum of f(1) + ... + f(n). The implementation
@@ -85,6 +93,7 @@ def summation_using_accumulate(n, f):
     True
     """
     "*** YOUR CODE HERE ***"
+    return accumulate(add,0,n,f)
 
 def product_using_accumulate(n, f):
     """An implementation of product using accumulate.
@@ -100,6 +109,8 @@ def product_using_accumulate(n, f):
     True
     """
     "*** YOUR CODE HERE ***"
+    return accumulate(mul,1,n,f)
+
 
 def make_repeater(h, n):
     """Return the function that computes the nth application of h.
@@ -117,6 +128,11 @@ def make_repeater(h, n):
     5
     """
     "*** YOUR CODE HERE ***"
+    def result(x):
+        for i in range(n):
+           x = h(x)
+        return x 
+    return result
 
 def protected_secret(password, secret, num_attempts):
     """
@@ -138,6 +154,17 @@ def protected_secret(password, secret, num_attempts):
     """
     def get_secret(password_attempt):
         "*** YOUR CODE HERE ***"
+        nonlocal num_attempts
+        if num_attempts <= 0:
+            print("SECRET LOCKED")
+            return get_secret
+        else:
+            if password_attempt == password:
+                print(secret)
+            else:
+                print("INCORRECT PASSWORD")
+                num_attempts -= 1
+            return get_secret
     return get_secret
 
 ##########################
@@ -153,10 +180,13 @@ def successor(n):
 def one(f):
     """Church numeral 1: same as successor(zero)"""
     "*** YOUR CODE HERE ***"
+    return lambda x : f(x)
+
 
 def two(f):
     """Church numeral 2: same as successor(successor(zero))"""
     "*** YOUR CODE HERE ***"
+    return lambda x : f(f(x))
 
 three = successor(two)
 
@@ -173,6 +203,7 @@ def church_to_int(n):
     3
     """
     "*** YOUR CODE HERE ***"
+    return n(increment)(0)
 
 def add_church(m, n):
     """Return the Church numeral for m + n, for Church numerals m and n.
@@ -181,6 +212,7 @@ def add_church(m, n):
     5
     """
     "*** YOUR CODE HERE ***"
+    return lambda f:lambda x:m(f)(n(f)(x))
 
 def mul_church(m, n):
     """Return the Church numeral for m * n, for Church numerals m and n.
@@ -191,6 +223,7 @@ def mul_church(m, n):
     12
     """
     "*** YOUR CODE HERE ***"
+    return lambda f:lambda x: m(n(f))(x)
 
 def pow_church(m, n):
     """Return the Church numeral m ** n, for Church numerals m and n.
@@ -201,3 +234,4 @@ def pow_church(m, n):
     9
     """
     "*** YOUR CODE HERE ***"
+    return lambda f:lambda x: n(m)(f)(x)
