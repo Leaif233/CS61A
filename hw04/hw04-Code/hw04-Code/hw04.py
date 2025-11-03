@@ -129,11 +129,13 @@ def sprout_leaves(t, values):
           2
     """
     "*** YOUR CODE HERE ***"
-    def pass_tree(t):
-      if is_leaf(t):
-          return tree(t,tree(values))
-      for branch in branches(t):
-          return tree(branches,)
+    def helper(now_branch):
+        if is_leaf(now_branch):
+            new_branch = [tree(v) for v in values]
+            return tree(label(now_branch),new_branch)
+        return tree(label(now_branch),[helper(branch) for branch in branches(now_branch)])
+    return helper(t)
+
 
 def add_trees(t1, t2):
     """
@@ -171,6 +173,20 @@ def add_trees(t1, t2):
       5
     """
     "*** YOUR CODE HERE ***"
+    new_label = label(t1) + label(t2)
+    branches1 , branches2 = branches(t1) , branches(t2)
+    max_len = max(len(branches(t1)),len(branches(t2)))
+    new_branches = []
+    for i in range(max_len):
+        if i < len(branches1) and i < len(branches2):
+            new_branches.append(add_trees(branches1[i],branches2[i]))
+        elif i < len(branches1):
+            new_branches.append(branches1[i])
+        else:
+            new_branches.append(branches2[i])
+    return tree(new_label,new_branches)
+    
+    
 
 def bigpath(t, n):
     """Return the number of paths in t that have a sum larger or equal to n.
@@ -184,6 +200,17 @@ def bigpath(t, n):
     1
     """
     "*** YOUR CODE HERE ***"
+    def helper(tree,summary):
+      new_summary = summary + label(tree)
+      count = 1 if new_summary >= n else 0
+      for branch in branches(tree):
+          count += helper(branch,new_summary)
+      return count
+    return helper(t,0)
+        
+    
+        
+
 
 def bigger_path(t, n):
     """Return the number of paths in t that have a sum larger or equal to n.
@@ -197,6 +224,10 @@ def bigger_path(t, n):
     1
     """
     "*** YOUR CODE HERE ***"
+    count = bigpath(t,n)
+    for branch in branches(t):
+        count += bigger_path(branch,n)
+    return count
 
 ##########################
 # Just for fun Questions #
