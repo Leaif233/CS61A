@@ -51,6 +51,7 @@ def planet(size):
     """
     assert size > 0
     "*** YOUR CODE HERE ***"
+    return ['planet',size]
 
 def size(w):
     """Select the size of a planet.
@@ -61,6 +62,7 @@ def size(w):
     """
     assert is_planet(w), 'must call size on a planet'
     "*** YOUR CODE HERE ***"
+    return w[1]
 
 def is_planet(w):
     """Whether w is a planet."""
@@ -112,6 +114,18 @@ def balanced(m):
     """
     assert is_mobile(m)
     "*** YOUR CODE HERE ***"
+    left_bool , right_bool = True,True
+    if is_mobile(end(left(m))):
+        left_bool = balanced(end(left(m)))
+    if is_mobile(end(right(m))):
+        right_bool = balanced(end(right(m)))
+    left_weight = total_weight(end(left(m)))
+    right_weight = total_weight(end(right(m)))
+    left_length = length(left(m))
+    right_length = length(right(m))
+    current_bool = (left_weight *left_length == right_weight *right_length)
+    return left_bool and right_bool and current_bool
+    
 
 from ADT import tree, label, branches, is_leaf, print_tree
 
@@ -142,6 +156,9 @@ def totals_tree(m):
     """
     assert is_mobile(m) or is_planet(m)
     "*** YOUR CODE HERE ***"
+    if is_planet(m):
+        return tree(size(m))
+    return tree(total_weight(m),[totals_tree(end(left(m))),totals_tree(end(right(m)))])
 
 def preorder(t):
     """Return a list of the entries in this tree in the order that they
@@ -154,6 +171,16 @@ def preorder(t):
     [2, 4, 6]
     """
     "*** YOUR CODE HERE ***"
+    result = []
+    def helper(tree):
+        if is_leaf(tree):
+            result.append(label(tree))
+            return
+        result.append(label(tree))
+        for branch in branches(tree):
+            helper(branch)
+    helper(t)
+    return result
 
 def has_path(t, word):
     """Return whether there is a path in a tree where the entries along the path
@@ -185,6 +212,23 @@ def has_path(t, word):
     """
     assert len(word) > 0, 'no path for empty word.'
     "*** YOUR CODE HERE ***"
+    dic = []
+    def helper(tree,value):
+        if is_leaf(t):
+            value += label(tree)
+            dic.append(value)
+            return
+        value += label(tree)
+        dic.append(value)
+        for branch in branches(tree):
+            helper(branch,value)
+        return
+    helper(t,'')
+    for d in dic:
+        if d == word:
+            return True
+    return False
+    
 
 def insert_items(lst, entry, elem):
     """
@@ -203,3 +247,7 @@ def insert_items(lst, entry, elem):
     True
     """
     "*** YOUR CODE HERE ***"
+    for i in range(len(lst)-1,-1,-1):
+        if lst[i] == entry:
+            lst.insert(i+1,elem)
+    return lst
